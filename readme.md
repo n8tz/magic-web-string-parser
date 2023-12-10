@@ -6,6 +6,9 @@ While this is working, but that's a hacky hack/pentest tool lib, some doc may co
 
 That's said, it's working and usefull ( at least for me ;) )
 
+For now can deal with : Paths, Base64, Json, query string
+
+
 Here some infos :
 ```
 const mwsp = require("magic-web-string-parser")
@@ -25,7 +28,7 @@ let parsed = mwsp.parse("/zolizoli/%7B%22test%22:%7B%22retest%22:%22value%22%7D%
     "#root.UrlPath[3].UrlEncoded[0].Json[0].jsonObject[1].prop[0].Json[0].jsonObject[0].prop[0].jsonObject[0].prop[0]": "value"
   },
   "stringNodesByKey": {// all string value of prop by the keys seen
-    "test": [/*...*/],
+    "retest": [/*...*/],
     "yo": [/*...*/]
   },
   "nodesByKey": {// all nodes that are value of a key seen
