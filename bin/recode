@@ -1,12 +1,44 @@
 #!/usr/bin/env node
 'use strict';
 const fs            = require('fs'),
-      data          = fs.readFileSync(0, 'utf-8'),
+      argz          = require('minimist')(process.argv.slice(2)),
+      data          = argz.input || argz.i || fs.readFileSync(0, 'utf-8').replace(/[\n\r]*$/, ""),
       decEverything = require('../');
-let output;
-if ( data.length )
-	output = decEverything.stringify(JSON.parse(data.substring(0, data.length - 1)));
-else
-	output = decEverything.stringify(JSON.parse(process.argv[3]));
+let parsed,
+    output,
+    toReplace       = [];
 
-console.log(output);
+if ( Array.isArray(argz.s) )
+	toReplace.push(...argz.s);
+else if ( argz.s )
+	toReplace.push(argz.s);
+
+if ( Array.isArray(argz.set) )
+	toReplace.push(...argz.set);
+else if ( argz.set )
+	toReplace.push(argz.set);
+
+if ( !data.length )
+	throw "No input data"
+parsed = decEverything.parse(data);
+//
+toReplace.forEach(
+	params => {
+		let selector = params.split(" <<")[0],
+		    value    = params.substring(selector.length + 3),
+		    useRaw;
+		if ( value.startsWith("< ") ) {
+			useRaw = true;
+			value  = value.substring(2)
+		}
+		else if ( value.startsWith(" ") ) {
+			value = value.substring(1)
+		}
+		else {
+			console.warn('Bad set param ( cant find / <<<? / ) : ', params);
+			process.exit(1)
+		}
+		parsed.set(selector, value, useRaw)
+	}
+)
+console.log(decEverything.stringify(parsed));

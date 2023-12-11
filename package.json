@@ -1,25 +1,27 @@
 {
   "name": "magic-web-string-parser",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "A hacky pentest lib to recursively map any property encoded in a string, change theirs values, and re-encode keeping the original encoding structure.",
-  "main": "dist/Lib.js",
+  "main": "dist/mwsp.js",
+  "repository": "https://github.com/n8tz/magic-web-string-parser",
   "scripts": {
     "build": "webpack",
     "dev": "webpack -w"
   },
   "bin": {
     "mws-decode": "bin/decode",
-    "mws-recode": "bin/recode",
-    "mws-extractKeys": "bin/extractKeys",
-    "mws-extractValues": "bin/extractValues"
+    "mws-recode": "bin/recode"
   },
   "dependencies": {
+    "jsonpath-plus": "^7.2.0",
     "deep-extend": "^0.6.0",
     "fast-deep-equal": "^2.0.1",
     "shortid": "^2.2.15",
     "is": "^3.2.1",
     "qs": "^6.11.2",
-    "base64-js": "^1.5.1"
+    "base64-js": "^1.5.1",
+    "hash.js": "^1.1.7",
+    "minimist": "^1.2.8"
   },
   "devDependencies": {
     "@babel/core": "^7.23.5",

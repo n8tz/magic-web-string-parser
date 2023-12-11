@@ -10,9 +10,9 @@ lPack.loadConfig(
 	{
 		"default": {
 			"rootFolder": "lib",
-			//externals   : true, // directly use lpack to exclude code outside of ./App/**/*.*
 			
-			vars:{
+			vars: {
+				externals   : true, // directly use lpack to exclude code outside of ./App/**/*.*
 				"rootAlias": "Lib"
 			},
 		}
@@ -33,13 +33,13 @@ module.exports = [
 		// The resulting build
 		output: {
 			path         : __dirname + "/dist",
-			filename     : "[name].js",
+			filename     : "mwsp.js",
 			publicPath   : "/",
 			libraryTarget: "commonjs-module"
 		},
 		
 		// add sourcemap in a dedicated file (.map)
-		devtool: 'source-map',
+		devtool: false,
 		
 		// required files resolving options
 		resolve: {
