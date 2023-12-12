@@ -1,4 +1,4 @@
-# magic-web-String-parser
+# magic-web-string-parser
 
 A lib to recursively map any property encoded in a String, change theirs values, and re-encode keeping the original encoding structure.
 
@@ -28,7 +28,7 @@ parsed.get(
 ```
 ### CLI Api :
 ```
-$ npm i -g magic-web-String-parser
+$ npm i -g magic-web-string-parser
 
 $ mws-decode -h
 Help :
@@ -67,7 +67,7 @@ Help :
 
 ### CLI recode examples :
 ```
-$ npm i -g magic-web-String-parser
+$ npm i -g magic-web-string-parser
 
 $ mws-recode   -s="$..Prop[?(/^test/ig.test(@.key))].value << /1337" <<<  "/zolizoli/%7B%22test%22:%7B%22retest%22:%22value%22%7D%7D/path?test=eyJ5byI6Inlv4p2k77iPIn0KeyJ5byI6Im5leHTinaTvuI8ifQ%3D%3D&yuup=%7B%22test%22:%7B%22retest%22:true%7D%7D"                                         
 /zolizoli/%7B%22test%22%3A%22%2F1337%22%7D/path?test=%2F1337&yuup=%7B%22test%22%3A%22%2F1337%22%7D
@@ -118,10 +118,11 @@ $ mws-decode  <<<  "/zolizoli/%7B%22test%22:%7B%22retest%22:%22value%22%7D%7D/pa
      - "path"
      String[0]
       - "path"
-   Qs[0]
+   PathQuery[0]
     - "test=eyJ5byI6Inlv4p2k77iPIn0KeyJ5byI6Im5leHTinaTvuI8ifQ%3D%3D&yuup=%7B%22test%22:%7B%22retest%22:true%7D%7D"
-    Json[0]
-     JsonObject[0]
+    Qs[0]
+     - "test=eyJ5byI6Inlv4p2k77iPIn0KeyJ5byI6Im5leHTinaTvuI8ifQ%3D%3D&yuup=%7B%22test%22:%7B%22retest%22:true%7D%7D"
+     QsObject[0]
       - "{\"test\":\"eyJ5byI6Inlv4p2k77iPIn0KeyJ5byI6Im5leHTinaTvuI8ifQ==\",\"yuup\":\"{\\\"test\\\":{\\\"retest\\\":true}}\"}"
       Prop[0] test =
         - "eyJ5byI6Inlv4p2k77iPIn0KeyJ5byI6Im5leHTinaTvuI8ifQ=="
@@ -142,12 +143,14 @@ $ mws-decode  <<<  "/zolizoli/%7B%22test%22:%7B%22retest%22:%22value%22%7D%7D/pa
             Prop[0] yo =
               - "next❤️"
       Prop[1] yuup =
-        JsonObject[0]
+        - "{\"test\":{\"retest\":true}}"
+        QsObject[0]
          - "{\"test\":{\"retest\":true}}"
          Prop[0] test =
            - "{\"retest\":true}"
            Prop[0] retest =
              - true
+
 ```
 
 ```
