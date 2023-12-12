@@ -2,11 +2,36 @@
 'use strict';
 const fs            = require('fs'),
       argz          = require('minimist')(process.argv.slice(2)),
-      data          = argz.input || argz.i || fs.readFileSync(0, 'utf-8').replace(/[\n\r]*$/, ""),
       decEverything = require('../');
 let parsed,
-    output,
+    output          = [],
+    help            = argz.h || argz.help,
+    data            = !help && (argz.input || argz.i || fs.readFileSync(0, 'utf-8').replace(/[\n\r]*$/, "")),
+    enumerate       = argz.e || argz.enumerate,
+    outputJson      = argz.json || false,
     toReplace       = [];
+
+if ( help ) {
+	console.log(
+`Help :
+	(StdIn)         : Input string ( Ex : mws-recode <<< "someStringToParse" )
+	-i, --input     : Input string
+	-e, --enumerate : stringify input once per replaced value
+	--json          : output in Json
+	-s, --set       : Set a new value in selected items
+		Ex :
+			Set a value in all Json / Qs leaf props ( having a primitive value like Number, String,... ) :
+				-s="$..Prop.*.value[?(@.isLeaf)] << payload"
+			Set a value in all Json / Qs leaf props with a key matching /url/ig :
+				-s="$..Prop[?(/url/ig.test(@.key))].value[?(@.isLeaf)] << payload"
+			Set a raw value in all Qs root props :
+				-s="$..QsObject.*.Prop.*.value <<< {\\"__proto__\\":{\\"toString\\":\\"toKill\\"}}"
+			Replace all Paths found in a child prop of a Qs section :
+				-s="$..Qs..Path << /path/traversal/1337"
+`
+	)
+	process.exit(0);
+}
 
 if ( Array.isArray(argz.s) )
 	toReplace.push(...argz.s);
@@ -26,7 +51,7 @@ toReplace.forEach(
 	params => {
 		let selector = params.split(" <<")[0],
 		    value    = params.substring(selector.length + 3),
-		    useRaw;
+		    useRaw, enumOutput;
 		if ( value.startsWith("< ") ) {
 			useRaw = true;
 			value  = value.substring(2)
@@ -38,7 +63,12 @@ toReplace.forEach(
 			console.warn('Bad set param ( cant find / <<<? / ) : ', params);
 			process.exit(1)
 		}
-		parsed.set(selector, value, useRaw)
+		enumOutput = parsed.set(selector, value, enumerate, useRaw);
+		if ( enumerate )
+			output.push(...enumOutput)
 	}
 )
-console.log(decEverything.stringify(parsed));
+if ( enumerate )
+	console.log(outputJson ? JSON.stringify(output) : output.join("\n\n"));
+else
+	console.log(outputJson ? [decEverything.stringify(parsed)] : decEverything.stringify(parsed));

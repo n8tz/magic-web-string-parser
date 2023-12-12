@@ -2,18 +2,117 @@
 'use strict';
 const fs            = require('fs'),
       argz          = require('minimist')(process.argv.slice(2)),
-      data          = argz.input || argz.i || fs.readFileSync(0, 'utf-8').replace(/[\n\r]*$/, ""),
       decEverything = require('../');
-let output;
+let output          = [],
+    parsed,
+    help            = argz.h || argz.help,
+    data            = !help && (argz.input || argz.i || fs.readFileSync(0, 'utf-8').replace(/[\n\r]*$/, "")),
+    toSelect        = [];
 
+if ( help ) {
+	console.log(
+		`Help :
+	(StdIn)         : Input string ( Ex : mws-decode <<< "someStringToParse" )
+	-i, --input     : Input string
+	--raw           : Output query-able parsed tree
+	--vars          : Output all props found with theirs raw values
+	--stats         : Output all found types with theirs occurrences count
+	-s, --select    : Select matching nodes, set new value if provided, print results
+		Ex :
+			Set & select a value in all Json / Qs leaf props ( having a primitive value like Number, String,... ) :
+				-s="$..Prop.*.value[?(@.isLeaf)] << payload"
+			Set & select a value in all Json / Qs leaf props with a key matching /url/ig :
+				-s="$..Prop[?(/url/ig.test(@.key))].value[?(@.isLeaf)] << payload"
+			Select all Paths found in a child prop of a Qs section :
+				-s="$..Qs..Path"
+`
+	)
+	process.exit(0);
+}
 if ( !data.length )
 	throw "No input data"
 
-output = decEverything.parse(data);
+if ( Array.isArray(argz.s) )
+	toSelect.push(...argz.s);
+else if ( argz.s )
+	toSelect.push(argz.s);
 
-if ( process.argv.includes("--stats") )
-	console.log(decEverything.printStats(output))
-else if ( process.argv.includes("--vars") )
-	console.log(decEverything.printVars(output))
-else
-	console.log(decEverything.printVarTree(output))
+if ( Array.isArray(argz.select) )
+	toSelect.push(...argz.select);
+else if ( argz.select )
+	toSelect.push(argz.select);
+
+parsed = decEverything.parse(data);
+if ( toSelect.length ) {
+	toSelect.forEach(
+		params => {
+			let selector = params.split(" <<")[0],
+			    value    = params.substring(selector.length + 3),
+			    useRaw, enumOutput;
+			if ( value.startsWith("< ") ) {
+				useRaw = true;
+				value  = value.substring(2)
+			}
+			else if ( value.startsWith(" ") ) {
+				value = value.substring(1)
+			}
+			else {
+				return;
+				//console.warn('Bad select param ( cant find / <<<? / ) : ', params);
+				//process.exit(1)
+			}
+			enumOutput = parsed.set(selector, value, false, useRaw);
+		}
+	)
+	//console.log(':::65: ', decEverything.stringify(parsed));
+	//parsed = decEverything.parse(decEverything.stringify(parsed));
+	
+	toSelect.forEach(
+		params => {
+			let selector = params.split(" <<")[0],
+			    value    = params.substring(selector.length + 3),
+			    useRaw, enumOutput;
+			output.push(...parsed.get(selector).map(( r, i ) => ([selector + " (" + i + ")", r])));
+		}
+	)
+	console.log(
+		output.map(( [selector, match] ) => (
+			           selector + " : " +
+			           (
+				           match?.__path
+				           ? stringifyMaxDepth(match, 1, 2)
+				           : JSON.stringify(match)
+			           )
+		           )
+		).join("\n")
+	);
+}
+else {
+	if ( process.argv.includes("--raw") )
+		console.log(JSON.stringify(parsed.jsonPathRoot, null, 2))
+	else if ( process.argv.includes("--stats") )
+		console.log(parsed.printStats())
+	else if ( process.argv.includes("--vars") )
+		console.log(parsed.printVars())
+	else
+		console.log(parsed.printVarTree())
+}
+
+function stringifyMaxDepth( obj, depth = 1, ident ) {
+	// recursion limited by depth arg
+	if ( !obj || typeof obj !== 'object' ) return JSON.stringify(obj)
+	
+	let curDepthResult = '"<?>"' // too deep
+	if ( depth > 0 ) {
+		curDepthResult = Object.keys(obj)
+		                       .map(( key ) => {
+			                       let val = stringifyMaxDepth(obj[key], depth - 1)
+			                       if ( val === undefined ) val = 'null'
+			                       return `"${key}": ${val}`
+		                       })
+		                       .join(', ')
+		curDepthResult = `{${curDepthResult}}`
+	}
+	
+	return JSON.stringify(JSON.parse(curDepthResult), null, ident)
+}

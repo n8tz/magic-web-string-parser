@@ -12,7 +12,7 @@ lPack.loadConfig(
 			"rootFolder": "lib",
 			
 			vars: {
-				externals   : true, // directly use lpack to exclude code outside of ./App/**/*.*
+				externals   : true, // directly use lpack to exclude code outside
 				"rootAlias": "Lib"
 			},
 		}
@@ -23,7 +23,7 @@ const isExcluded = lPack.isFileExcluded("default");
 
 module.exports = [
 	{
-		mode: "development",
+		mode: "production",
 		
 		// The jsx App entry point
 		entry: {
