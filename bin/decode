@@ -41,61 +41,64 @@ if ( Array.isArray(argz.select) )
 	toSelect.push(...argz.select);
 else if ( argz.select )
 	toSelect.push(argz.select);
-
-parsed = decEverything.parse(data);
-if ( toSelect.length ) {
-	toSelect.forEach(
-		params => {
-			let selector = params.split(" <<")[0],
-			    value    = params.substring(selector.length + 3),
-			    useRaw, enumOutput;
-			if ( value.startsWith("< ") ) {
-				useRaw = true;
-				value  = value.substring(2)
+try {
+	parsed = decEverything.parse(data);
+	if ( toSelect.length ) {
+		toSelect.forEach(
+			params => {
+				let selector = params.split(" <<")[0],
+				    value    = params.substring(selector.length + 3),
+				    useRaw, enumOutput;
+				if ( value.startsWith("< ") ) {
+					useRaw = true;
+					value  = value.substring(2)
+				}
+				else if ( value.startsWith(" ") ) {
+					value = value.substring(1)
+				}
+				else {
+					return;
+					//console.warn('Bad select param ( cant find / <<<? / ) : ', params);
+					//process.exit(1)
+				}
+				enumOutput = parsed.set(selector, value, false, useRaw);
 			}
-			else if ( value.startsWith(" ") ) {
-				value = value.substring(1)
+		)
+		//console.log(':::65: ', decEverything.stringify(parsed));
+		//parsed = decEverything.parse(decEverything.stringify(parsed));
+		
+		toSelect.forEach(
+			params => {
+				let selector = params.split(" <<")[0],
+				    value    = params.substring(selector.length + 3),
+				    useRaw, enumOutput;
+				output.push(...parsed.get(selector).map(( r, i ) => ([selector + " (" + i + ")", r])));
 			}
-			else {
-				return;
-				//console.warn('Bad select param ( cant find / <<<? / ) : ', params);
-				//process.exit(1)
-			}
-			enumOutput = parsed.set(selector, value, false, useRaw);
-		}
-	)
-	//console.log(':::65: ', decEverything.stringify(parsed));
-	//parsed = decEverything.parse(decEverything.stringify(parsed));
-	
-	toSelect.forEach(
-		params => {
-			let selector = params.split(" <<")[0],
-			    value    = params.substring(selector.length + 3),
-			    useRaw, enumOutput;
-			output.push(...parsed.get(selector).map(( r, i ) => ([selector + " (" + i + ")", r])));
-		}
-	)
-	console.log(
-		output.map(( [selector, match] ) => (
-			           selector + " : " +
-			           (
-				           match?.__path
-				           ? stringifyMaxDepth(match, 1, 2)
-				           : JSON.stringify(match)
+		)
+		console.log(
+			output.map(( [selector, match] ) => (
+				           selector + " : " +
+				           (
+					           match?.__path
+					           ? stringifyMaxDepth(match, 1, 2)
+					           : JSON.stringify(match)
+				           )
 			           )
-		           )
-		).join("\n")
-	);
-}
-else {
-	if ( process.argv.includes("--raw") )
-		console.log(JSON.stringify(parsed.jsonPathRoot, null, 2))
-	else if ( process.argv.includes("--stats") )
-		console.log(parsed.printStats())
-	else if ( process.argv.includes("--vars") )
-		console.log(parsed.printVars())
-	else
-		console.log(parsed.printVarTree())
+			).join("\n")
+		);
+	}
+	else {
+		if ( process.argv.includes("--raw") )
+			console.log(JSON.stringify(parsed.jsonPathRoot, null, 2))
+		else if ( process.argv.includes("--stats") )
+			console.log(parsed.printStats())
+		else if ( process.argv.includes("--vars") )
+			console.log(parsed.printVars())
+		else
+			console.log(parsed.printVarTree())
+	}
+} catch ( e ) {
+	console.error("Fail :" + e);
 }
 
 function stringifyMaxDepth( obj, depth = 1, ident ) {

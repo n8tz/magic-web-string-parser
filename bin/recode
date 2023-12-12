@@ -13,7 +13,7 @@ let parsed,
 
 if ( help ) {
 	console.log(
-`Help :
+		`Help :
 	(StdIn)         : Input string ( Ex : mws-recode <<< "someStringToParse" )
 	-i, --input     : Input string
 	-e, --enumerate : stringify input once per replaced value
@@ -45,30 +45,36 @@ else if ( argz.set )
 
 if ( !data.length )
 	throw "No input data"
-parsed = decEverything.parse(data);
+
+try {
+	parsed = decEverything.parse(data);
 //
-toReplace.forEach(
-	params => {
-		let selector = params.split(" <<")[0],
-		    value    = params.substring(selector.length + 3),
-		    useRaw, enumOutput;
-		if ( value.startsWith("< ") ) {
-			useRaw = true;
-			value  = value.substring(2)
+	toReplace.forEach(
+		params => {
+			let selector = params.split(" <<")[0],
+			    value    = params.substring(selector.length + 3),
+			    useRaw, enumOutput;
+			if ( value.startsWith("< ") ) {
+				useRaw = true;
+				value  = value.substring(2)
+			}
+			else if ( value.startsWith(" ") ) {
+				value = value.substring(1)
+			}
+			else {
+				console.warn('Bad set param ( cant find / <<<? / ) : ', params);
+				process.exit(1)
+			}
+			enumOutput = parsed.set(selector, value, enumerate, useRaw);
+			if ( enumerate )
+				output.push(...enumOutput)
 		}
-		else if ( value.startsWith(" ") ) {
-			value = value.substring(1)
-		}
-		else {
-			console.warn('Bad set param ( cant find / <<<? / ) : ', params);
-			process.exit(1)
-		}
-		enumOutput = parsed.set(selector, value, enumerate, useRaw);
-		if ( enumerate )
-			output.push(...enumOutput)
-	}
-)
-if ( enumerate )
-	console.log(outputJson ? JSON.stringify(output) : output.join("\n\n"));
-else
-	console.log(outputJson ? [decEverything.stringify(parsed)] : decEverything.stringify(parsed));
+	)
+	if ( enumerate )
+		console.log(outputJson ? JSON.stringify(output) : output.join("\n\n"));
+	else
+		console.log(outputJson ? [decEverything.stringify(parsed)] : decEverything.stringify(parsed));
+	
+} catch ( e ) {
+	console.error("Fail :" + e);
+}

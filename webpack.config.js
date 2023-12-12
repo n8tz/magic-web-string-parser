@@ -23,7 +23,7 @@ const isExcluded = lPack.isFileExcluded("default");
 
 module.exports = [
 	{
-		mode: "production",
+		mode: "development",
 		
 		// The jsx App entry point
 		entry: {
