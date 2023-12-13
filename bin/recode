@@ -76,5 +76,5 @@ try {
 		console.log(outputJson ? [decEverything.stringify(parsed)] : decEverything.stringify(parsed));
 	
 } catch ( e ) {
-	console.error("Fail :" + e);
+	console.error("Fail :", e);
 }
