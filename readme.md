@@ -4,7 +4,7 @@ A lib to recursively map any property encoded in a String, change theirs values,
 
 While this is working, that's an hacky not tested hack/pentest tool lib with probable various false positive matchs
 
-For now can deal with : Paths, Base64, Json, Query String, MultiLines
+For now can deal with : Paths, Base64, Json, Query String, MultiLines blob, Http Request, Url & coma Key value list
 
 ### JS Api :
 ```
