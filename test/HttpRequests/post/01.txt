@@ -1,0 +1,17 @@
+POST /c360/v1/track http/2
+Host: secure.booking.com
+x-booking-language-code: en-gb
+x-booking-csrf: pINrZQAAAAA=8qOSCyKHibI3d5AGBKmGlWpIfSACcSChWK3S_RtKRpptWPC5K5EpP69HLtfi9D_CEnX12o2RNrGZg0GSeKiTBbu0gN1l5FydOSELPBc33QwvXZ8b-YCp2ie9WuDaDGlvDVRzXVAnksj8gTjVOv94VhGeyyZUoLG1pTafbZ5uxAk9U1QZL_cXirHpbCNDdslaJaxK_FRfqN1fvD7O
+x-booking-aid: 304142
+user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36
+x-booking-label: gen173nr-1FEg1mbGlnaHRzX2luZGV4KIICQgVpbmRleEgJWARoTYgBAZgBCbgBF8gBDNgBAegBAfgBAogCAagCA7gC_9GsqwbAAgHSAiRlOTEzOTI5MS02MWU5LTQ3MzMtOTUwMi1mYzQzOTRkZjVkMGXYAgXgAgE
+x-partner-channel-id: 3
+content-type: application/x-www-form-urlencoded; charset=UTF-8
+x-booking-pageview-id: 81ad6bf224650136
+accept: application/json, text/javascript, */*; q=0.01
+referer: https://secure.booking.com/
+x-booking-sitetype-id: 1
+x-requested-with: XMLHttpRequest
+x-booking-session-id: 2694dc127592b2e4ac11e9499d7b5811
+
+{"events":[{"action_name":"apptrack.landing_page_funnel","action_version":"1.0.0","content":{"affiliate_id":"304142","label":"gen173nr-1FEg1mbGlnaHRzX2luZGV4KIICQgVpbmRleEgJWARoTYgBAZgBCbgBF8gBDNgBAegBAfgBAogCAagCA7gC_9GsqwbAAgHSAiRlOTEzOTI5MS02MWU5LTQ3MzMtOTUwMi1mYzQzOTRkZjVkMGXYAgXgAgE","ref_url":"","url":"/help"},"context":{"page":{"page_referrer":"","page_url":"https://secure.booking.com/help?source=hc_entry_point_flights_header&lang=en-gb&aid=304142&label=gen173nr-1FEg1mbGlnaHRzX2luZGV4KIICQgVpbmRleEgJWARoTYgBAZgBCbgBF8gBDNgBAegBAfgBAogCAagCA7gC_9GsqwbAAgHSAiRlOTEzOTI5MS02MWU5LTQ3MzMtOTUwMi1mYzQzOTRkZjVkMGXYAgXgAgE","page_title":"Booking.com Help Centre"},"local":{"currency":"EUR"}},"tracker":{"tracker_name":"C360JSTracker","tracker_type":"Client","tracker_version":"0.1.1"}}]}

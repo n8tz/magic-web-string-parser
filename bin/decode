@@ -92,6 +92,8 @@ try {
 			console.log(JSON.stringify(parsed.jsonPathRoot, null, 2))
 		else if ( process.argv.includes("--stats") )
 			console.log(parsed.printStats())
+		else if ( process.argv.includes("--varsPath") )
+			console.log(parsed.printVars(true))
 		else if ( process.argv.includes("--vars") )
 			console.log(parsed.printVars())
 		else
