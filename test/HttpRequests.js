@@ -9,7 +9,7 @@ describe('HttpRequests', function () {
 			    lastReq,
 			    results  = [],
 			    fails;
-			
+
 			//console.log(':::8: ', requests);
 			for ( let file of requests ) {
 				lastReq = await fs.readFile(reqDir + "/" + file);
@@ -25,8 +25,8 @@ describe('HttpRequests', function () {
 				               : results[res];
 				fails        = fails || results[res];
 			}
-			
-			
+
+
 			assert.deepEqual(fails, false, "\n" + results.map(r => r.message).join("\n"));
 		});
 	});
@@ -43,11 +43,13 @@ describe('HttpRequests', function () {
 				lastReq = await fs.readFile(reqDir + "/" + file);
 				try {
 					results.push(mwsp.parse(lastReq + ""))
+					//console.log(':::51: ', results[results.length-1].get("$..Prop.*.value"));
 				} catch ( e ) {
 					results.push({ message: "Request " + file + " fail : \n" + lastReq + "\n\n" + e, error: e })
 				}
 			}
 			for ( let res in results ) {
+				
 				results[res] = !results[res].error
 				               ? !results[res].get("$..HttpRequestBody..Json").length && { message: "Request " + requests[res] + " fail ( Object is missing ) :\n\n" + results[res].printStats() + "\n" }
 				               : results[res];
