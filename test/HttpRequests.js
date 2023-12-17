@@ -10,11 +10,11 @@ describe('HttpRequests', function () {
 			    results  = [],
 			    fails;
 
-			//console.log(':::8: ', requests);
 			for ( let file of requests ) {
 				lastReq = await fs.readFile(reqDir + "/" + file);
 				try {
 					results.push(mwsp.parse(lastReq + ""))
+					//console.log(':::51: ', results[results.length-1].printVarTree());
 				} catch ( e ) {
 					results.push({ message: "Request " + file + " fail : \n" + lastReq + "\n\n" + e, error: e })
 				}

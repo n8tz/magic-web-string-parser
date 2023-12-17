@@ -6,7 +6,8 @@ const fs            = require('fs'),
 let output          = [],
     parsed,
     help            = argz.h || argz.help,
-    data            = !help && (argz.input || argz.i || fs.readFileSync(0, 'utf-8').replace(/[\n\r]*$/, "")),
+    data            = !help && (argz.input || argz.i || fs.readFileSync(0, 'utf-8')),
+    showPaths       = argz.p || argz.path,
     toSelect        = [];
 
 if ( help ) {
@@ -17,6 +18,7 @@ if ( help ) {
 	--raw           : Output query-able parsed tree
 	--vars          : Output all props found with theirs raw values
 	--stats         : Output all found types with theirs occurrences count
+	-p, --path      : Output with Json Paths
 	-s, --select    : Select matching nodes, set new value if provided, print results
 		Ex :
 			Set & select a value in all Json / Qs leaf props ( having a primitive value like Number, String,... ) :
@@ -49,35 +51,12 @@ try {
 				let selector = params.split(" <<")[0],
 				    value    = params.substring(selector.length + 3),
 				    useRaw, enumOutput;
-				if ( value.startsWith("< ") ) {
-					useRaw = true;
-					value  = value.substring(2)
-				}
-				else if ( value.startsWith(" ") ) {
-					value = value.substring(1)
-				}
-				else {
-					return;
-					//console.warn('Bad select param ( cant find / <<<? / ) : ', params);
-					//process.exit(1)
-				}
-				enumOutput = parsed.set(selector, value, false, useRaw);
-			}
-		)
-		//console.log(':::65: ', decEverything.stringify(parsed));
-		//parsed = decEverything.parse(decEverything.stringify(parsed));
-		
-		toSelect.forEach(
-			params => {
-				let selector = params.split(" <<")[0],
-				    value    = params.substring(selector.length + 3),
-				    useRaw, enumOutput;
 				output.push(...parsed.get(selector).map(( r, i ) => ([selector + " (" + i + ")", r])));
 			}
 		)
 		console.log(
 			output.map(( [selector, match] ) => (
-				           selector + " : " +
+				           (showPaths ? selector + " : " : "") +
 				           (
 					           match?.__path
 					           ? stringifyMaxDepth(match, 1, 2)
@@ -92,31 +71,40 @@ try {
 			console.log(JSON.stringify(parsed.jsonPathRoot, null, 2))
 		else if ( process.argv.includes("--stats") )
 			console.log(parsed.printStats())
-		else if ( process.argv.includes("--varsPath") )
-			console.log(parsed.printVars(true))
 		else if ( process.argv.includes("--vars") )
-			console.log(parsed.printVars())
+			console.log(parsed.printVars(showPaths))
 		else
 			console.log(parsed.printVarTree())
 	}
 } catch ( e ) {
-	console.error("Fail :" + e);
+	console.error("Fail :", e);
 }
 
 function stringifyMaxDepth( obj, depth = 1, ident ) {
 	// recursion limited by depth arg
 	if ( !obj || typeof obj !== 'object' ) return JSON.stringify(obj)
 	
-	let curDepthResult = '"<?>"' // too deep
+	let curDepthResult = Array.isArray(obj)
+	                     ? '"<Array(' + obj.length + ')>"' // too deep
+	                     : '"<Object>"';
 	if ( depth > 0 ) {
-		curDepthResult = Object.keys(obj)
-		                       .map(( key ) => {
-			                       let val = stringifyMaxDepth(obj[key], depth - 1)
-			                       if ( val === undefined ) val = 'null'
-			                       return `"${key}": ${val}`
-		                       })
-		                       .join(', ')
-		curDepthResult = `{${curDepthResult}}`
+		if ( Array.isArray(obj) )
+			curDepthResult = "[" + Object.keys(obj)
+			                             .map(( key ) => {
+				                             let val = stringifyMaxDepth(obj[key], depth, ident)
+				                             if ( val === undefined ) val = 'null'
+				                             return `${val}`
+			                             })
+			                             .join(', ') + "]"
+		else
+			curDepthResult = "{" + Object.keys(obj)
+			                             .map(( key ) => {
+				                             let val = stringifyMaxDepth(obj[key], depth - 1, ident)
+				                             if ( val === undefined ) val = 'null'
+				                             return `"${key}": ${val}`
+			                             })
+			                             .join(', ') + "}"
+		//curDepthResult = `{${curDepthResult}}`
 	}
 	
 	return JSON.stringify(JSON.parse(curDepthResult), null, ident)

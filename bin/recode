@@ -6,7 +6,7 @@ const fs            = require('fs'),
 let parsed,
     output          = [],
     help            = argz.h || argz.help,
-    data            = !help && (argz.input || argz.i || fs.readFileSync(0, 'utf-8').replace(/[\n\r]*$/, "")),
+    data            = !help && (argz.input || argz.i || fs.readFileSync(0, 'utf-8')),
     enumerate       = argz.e || argz.enumerate,
     outputJson      = argz.json || false,
     toReplace       = [];

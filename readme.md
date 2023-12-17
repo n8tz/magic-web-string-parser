@@ -15,16 +15,17 @@ let parsed = mwsp.parse("...");
 parsed.set(
   jsonPathSelector, // Ex: $..Prop.*.value[?(@.isLeaf)]
   newValue,         // value to set
-  enumerate,        // do return an array with 1 stringified versions per replaced value
+  enumerate,        // do return an array with 1 stringified versions per replaced value ( will not set the given values on the current instance )
   raw               // do set as raw Json  
 ) // return one of :
   //   - array of 1 serialized version per replaced value 
-  //   - the serialized string with provided value in all selected node
+  //   - the serialized strings with provided value in all selected node
 
 parsed.get(
   jsonPathSelector // Ex: $..Prop.*.value[?(@.isLeaf)]
 ) // return jsonPath selection
 
+parsed.stringify() // return as string with updated values
 ```
 ### CLI Api :
 ```
@@ -37,6 +38,7 @@ Help :
         --raw           : Output query-able parsed tree
         --vars          : Output all props found with theirs raw values
         --stats         : Output all found types with theirs occurrences count
+        -p, --path      : Output with Json Paths
         -s, --select    : Select matching nodes, set new value if provided, print results
                 Ex :
                         Set & select a value in all Json / Qs leaf props ( having a primitive value like Number, String,... ) :
