@@ -1,0 +1,7 @@
+POST /rb_bf88204ffh?type=js3&sn=v_4_srv_6_sn_76600603E80CE8A1B110C1B6146D6402_perc_100000_ol_0_mul_1_app-3A220110cf75551a30_1_rcs-3Acss_0&svrid=6&flavor=post&vi=JHGGPFQMNTVPCBRPEETSETQLEUAUFURU-0&modifiedSince=1702678851197&rf=https%3A%2F%2Fwww.truk.com%2Fonline-hotel-booking.mi&bp=3&app=220110cf75551a30&crc=3950006874&en=sy2d3jns&end=1 http/1.1
+Host: www.truk.com
+referer:https://www.truk.com/online-hotel-booking.mi
+user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36
+content-type:text/plain;charset=UTF-8
+
+$a=1%7C2%7C_event_%7C1702838906886%7C_sr_%7Ctype%7Cinit%7Cfh%7CICA27NQVfhjqrux$rId=RID_70022700$rpId=1315728838$tvn=%2Fonline-hotel-booking.mi$tvt=1702838903363$tvm=i1%3Bk0%3Bh0$tvtrg=1$w=1200$h=900$sw=800$sh=600$md=mdcc66%2C%2Fonline-hotel-booking%3Bmdcc69%2Cunauthenticated%3Bmdcc70%2Cunauthenticated%3Bmdcc32%2CFR%3Bmdcc33%2Cprod13%3Bmdcc38%2C74D5AE3A-DA71-5018-8E35-DED8D2D7DB07%3Bmdcc48%2CMozilla%2F5.0%20(Windows%20NT%2010.0%5Es%20Win64%5Es%20x64)%20AppleWebKit%2F537.36%20(KHTML%5Ec%20like%20Gecko)%20Chrome%2F113.0.0.0%20Safari%2F537.36%3Bmdcc56%2Cram-prod%3Bmdcc57%2C74D5AE3A-DA71-5018-8E35-DED8D2D7DB07%3Bmdcc61%2C74D5AE3A-DA71-5018-8E35-DED8D2D7DB07%3Bmdcc63%2Cram-prod$url=https%3A%2F%2Fwww.truk.com%2Fonline-hotel-booking.mi$title=Book%20Here%2C%20Benefit%20Now$latC=0$app=220110cf75551a30$vi=JHGGPFQMNTVPCBRPEETSETQLEUAUFURU-0$fId=38906851_801$v=10279231130031246$vID=1702838647316O7B55D2FOGUOMPJ9D1KDTMG4HO0S7KB9$time=1702838909667

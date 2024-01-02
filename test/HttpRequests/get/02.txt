@@ -1,0 +1,3 @@
+GET /?scid=2cc71eff-6007-4dcd-a4c8-cca928290134 HTTP/1.1
+Host: activities.marriott.com
+

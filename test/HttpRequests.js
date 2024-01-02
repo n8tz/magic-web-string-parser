@@ -51,7 +51,7 @@ describe('HttpRequests', function () {
 			for ( let res in results ) {
 				
 				results[res] = !results[res].error
-				               ? !results[res].get("$..HttpRequestBody..Json").length && { message: "Request " + requests[res] + " fail ( Object is missing ) :\n\n" + results[res].printStats() + "\n" }
+				               ? !results[res].get("$..HttpRequestBody").length && { message: "Request " + requests[res] + " fail ( Object is missing ) :\n\n" + results[res].printStats() + "\n" }
 				               : results[res];
 				fails        = fails || results[res];
 			}
