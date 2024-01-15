@@ -600,9 +600,9 @@ __webpack_require__.r(__webpack_exports__);
 
 
 var typeTests = {
-  "&": /^\??[^\s=\/\\]+(\=[^\s\=\&]*)?(\&[^\s=\/\\]+(\=[^\s=\&]*)?)*$/i,
-  "$": /^\??[^\s=]+(\=[^\s\=\$]*)?(\$[^\s=]+(\=[^\s=\$]*)?)*$/i,
-  "|": /^\??[^\s=]+(\=[^\s\=\|]*)?(\|[^\s=]+(\=[^\s=\|]*)?)*$/i
+  "&": /^\??[^\s=\/\\\;\,\&]+(\=[^\s\=\&]*)?(\&[^\s=\/\\\;\,\&]+(\=[^\s=\&]*)?)*$/i,
+  "$": /^\$?[^\s=\/\\\;\,\$]+(\=[^\s\=\$]*)?(\$[^\s=\/\\\;\,\$]+(\=[^\s=\$]*)?)*$/i,
+  "|": /^\|?[^\s=\/\\\;\,\|]+(\=[^\s\=\|]*)?(\|[^\s=\/\\\;\,\|]+(\=[^\s=\|]*)?)*$/i
 };
 var priority = 14;
 var variations = ['&', '$', '|'];
@@ -821,10 +821,12 @@ function parse(_ref, options, codecs, parseAny) {
   data = pathParams.shift();
   pathParams = pathParams.join("?");
   output.withQueryParam = !!pathParams;
-  seemsToHaveAFileName = /[^\/]+\.[^\/\.]+$/i.test(data);
+  seemsToHaveAFileName = /[^\/\.]+\.[^\/\.]{2,5}$/i.test(data);
   seemsToHaveIllegalCharacters = /[\s\{"]/i.test(data);
-  seemsToHaveMultipleDirectory = data.split('/') > 2;
-  if (!(data[0] === "/" || data.startsWith("./")) && (!pathParams || seemsToHaveIllegalCharacters)) if (!seemsToHaveAFileName || !seemsToHaveMultipleDirectory || seemsToHaveIllegalCharacters) return;
+  seemsToHaveMultipleDirectory = data.split('/').length > 2;
+  //console.log('parse::parse:75: ', data, seemsToHaveAFileName, seemsToHaveMultipleDirectory, seemsToHaveIllegalCharacters);
+  if (!(data[0] === "/" || data.startsWith("./")) && !(seemsToHaveAFileName || seemsToHaveMultipleDirectory) || seemsToHaveIllegalCharacters) return;
+  if (seemsToHaveIllegalCharacters && !(seemsToHaveAFileName && seemsToHaveMultipleDirectory)) return;
   try {
     var parsed = data.split("/");
     parsed.shift();
