@@ -398,10 +398,12 @@ function parse(_ref, options, codecs, parseAny) {
       output.childs.push({
         type: prefix + "Array",
         prefix: prefix,
+        weight: 5,
         data: !is__WEBPACK_IMPORTED_MODULE_0___default().string(data) ? JSON.stringify(data) : data,
         childs: parsed.map(function (value) {
           return {
             type: prefix + "ArrayItem",
+            weight: 5,
             childs: [!is__WEBPACK_IMPORTED_MODULE_0___default().string(value) ? parse({
               prefix: prefix,
               data: value,
@@ -418,6 +420,7 @@ function parse(_ref, options, codecs, parseAny) {
       output.childs.push({
         type: prefix + "Object",
         prefix: prefix,
+        weight: 5,
         data: !is__WEBPACK_IMPORTED_MODULE_0___default().string(data) ? JSON.stringify(data) : data,
         childs: Object.keys(parsed).map(function (key) {
           return {
@@ -493,6 +496,7 @@ function parse(_ref, options, codecs, parseAny) {
     output.childs.push(codecs.Json.parse({
       data: parsed,
       prefix: "KeyValue",
+      weight: 2,
       isRecursive: true
     }, options, codecs, parseAny));
     return output;
@@ -752,7 +756,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   parse: () => (/* binding */ parse),
 /* harmony export */   priority: () => (/* binding */ priority),
-/* harmony export */   stringify: () => (/* binding */ stringify)
+/* harmony export */   stringify: () => (/* binding */ stringify),
+/* harmony export */   weight: () => (/* binding */ weight)
 /* harmony export */ });
 /* harmony import */ var is__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! is */ "?316c");
 /* harmony import */ var is__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(is__WEBPACK_IMPORTED_MODULE_0__);
@@ -761,6 +766,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 var priority = 8;
+var weight = 20;
 function stringify(data, options, stringifyAny) {
   var obj,
     nodes = data.childs,
@@ -1036,7 +1042,8 @@ var api = {
         json: this.jsonPathRoot
       }),
       selected = [],
-      output = [];
+      output = [],
+      error;
     nodes.forEach(function (node) {
       var _node;
       node = Array.isArray(node) ? node[0] : node;
@@ -1048,11 +1055,19 @@ var api = {
       var oKey;
       if (node !== null && node !== void 0 && node.key) {
         oKey = node.key;
-        node.key = value;
+        try {
+          node.key = is__WEBPACK_IMPORTED_MODULE_3___default()["function"](value) ? value(node.key, node.__path) : value;
+        } catch (e) {
+          throw new Error("Set Fn fail on key : " + node.key + "\n" + e);
+        }
       } else {
-        if (raw) node.newRawValue = value;else node.newValue = value;
+        try {
+          if (raw) node.newRawValue = is__WEBPACK_IMPORTED_MODULE_3___default()["function"](value) ? value(node.data, node.__path) : value;else node.newValue = is__WEBPACK_IMPORTED_MODULE_3___default()["function"](value) ? value(node.data, node.__path) : value;
+        } catch (e) {
+          throw new Error("Set Fn fail on data : " + node.data + "\n" + e);
+        }
       }
-      if (enumerate) {
+      if (enumerate && !(node.newRawValue === undefined && node.newValue === undefined && !oKey)) {
         output.push(_stringify(_this));
         if (node !== null && node !== void 0 && node.key) node.key = oKey;else {
           delete node.newValue;
@@ -1065,6 +1080,9 @@ var api = {
   stringify: function stringify(options) {
     return _stringify(this, options);
   },
+  toString: function toString() {
+    return this.stringify();
+  },
   printStats: function printStats() {
     var output = "",
       cNode,
@@ -1075,6 +1093,24 @@ var api = {
     }
     return output;
   },
+  getVars: function getVars() {
+    var output = [],
+      cNode,
+      stack = [this.root];
+    while (stack.length) {
+      cNode = stack.shift();
+      if (cNode.isPropValueOf) {
+        output.push({
+          humanPath: cNode.__humanPath,
+          jsonPath: cNode.__path,
+          key: cNode.isPropValueOf,
+          value: cNode.newRawValue || JSON.stringify(cNode.newValue || cNode.data)
+        });
+      }
+      cNode.childs && stack.unshift.apply(stack, _toConsumableArray(cNode.childs));
+    }
+    return output;
+  },
   printVars: function printVars(withPath) {
     var output = [""],
       cNode,
@@ -1082,7 +1118,6 @@ var api = {
     while (stack.length) {
       cNode = stack.shift();
       if (cNode.isPropValueOf) {
-        !cNode.__humanPath && console.log('api::printVars:87: ', cNode);
         if (withPath) output.push(cNode.__humanPath + Array(Math.max(30 - cNode.__humanPath.length, 2)).join(" ") + "= " + (cNode.newRawValue || JSON.stringify(cNode.newValue || cNode.data)) + " ( " + cNode.__path + " )");else output.push(cNode.isPropValueOf + Array(Math.max(20 - cNode.isPropValueOf.length, 2)).join(" ") + "= " + (cNode.newRawValue || JSON.stringify(cNode.newValue || cNode.data)));
       }
       cNode.childs && stack.unshift.apply(stack, _toConsumableArray(cNode.childs));
@@ -1213,10 +1248,9 @@ function parse(data, options, context) {
       current.type = is__WEBPACK_IMPORTED_MODULE_3___default().string(current.data) ? "String" : is__WEBPACK_IMPORTED_MODULE_3___default().number(current.data) ? "Number" : is__WEBPACK_IMPORTED_MODULE_3___default().bool(current.data) ? "Boolean" : current.data === null ? "Null" : current.data === undefined ? "undefined" : "undefined";
     }
     var isNative = !!nativeTypes.includes(current.type);
-    isNative && output.totalNativeTypeNodes++;
-    if (_codecs_js__WEBPACK_IMPORTED_MODULE_0__["default"][current.type]) output.totalNodesWeight += ((_codecs$current$type = _codecs_js__WEBPACK_IMPORTED_MODULE_0__["default"][current.type]) === null || _codecs$current$type === void 0 ? void 0 : _codecs$current$type.weight) || 1;
+    if (isNative) output.totalNativeTypeNodes++;else if (_codecs_js__WEBPACK_IMPORTED_MODULE_0__["default"][current.type]) output.totalNodesWeight += ((_codecs$current$type = _codecs_js__WEBPACK_IMPORTED_MODULE_0__["default"][current.type]) === null || _codecs$current$type === void 0 ? void 0 : _codecs$current$type.weight) || 1;else if (current.type === "Prop") output.totalNodesWeight += 10;else if (current.weight) output.totalNodesWeight += current.weight;
     if (current.type === "Prop") {
-      output.totalNodesWeight += 10;
+      //output.totalNodesWeight += 10;
       current.childs[0].isPropValueOf = current.key;
     } else {}
     if (current.isPropValueOf) {

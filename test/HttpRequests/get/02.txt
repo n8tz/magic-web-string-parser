@@ -1,3 +1,5 @@
-GET /?scid=2cc71eff-6007-4dcd-a4c8-cca928290134 HTTP/1.1
-Host: activities.marriott.com
+GET /Access.do?mode=recovery HTTP/1.1
+Host:cars.truk.com
+upgrade-insecure-requests:1
+user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36
 
