@@ -60,6 +60,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   MultiLines: () => (/* binding */ MultiLines),
 /* harmony export */   Qs: () => (/* binding */ Qs),
 /* harmony export */   Url: () => (/* binding */ Url),
+/* harmony export */   UrlEncoded: () => (/* binding */ UrlEncoded),
 /* harmony export */   UrlPath: () => (/* binding */ UrlPath),
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
@@ -81,6 +82,8 @@ var _Lib_codecs_KeyValue_js = __webpack_require__(/*! Lib/codecs/KeyValue.js */ 
 walknSetExport(_exports, "KeyValue", _Lib_codecs_KeyValue_js);
 var _Lib_codecs_MultiLines_js = __webpack_require__(/*! Lib/codecs/MultiLines.js */ "./lib/codecs/MultiLines.js");
 walknSetExport(_exports, "MultiLines", _Lib_codecs_MultiLines_js);
+var _Lib_codecs_UrlEncoded_js = __webpack_require__(/*! Lib/codecs/UrlEncoded.js */ "./lib/codecs/UrlEncoded.js");
+walknSetExport(_exports, "UrlEncoded", _Lib_codecs_UrlEncoded_js);
 var _Lib_codecs_HttpRequest_js = __webpack_require__(/*! Lib/codecs/HttpRequest.js */ "./lib/codecs/HttpRequest.js");
 walknSetExport(_exports, "HttpRequest", _Lib_codecs_HttpRequest_js);
 var Base64 = _exports.Base64;
@@ -90,6 +93,7 @@ var KeyValue = _exports.KeyValue;
 var MultiLines = _exports.MultiLines;
 var Qs = _exports.Qs;
 var Url = _exports.Url;
+var UrlEncoded = _exports.UrlEncoded;
 var UrlPath = _exports.UrlPath;
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_exports);
 
@@ -745,6 +749,65 @@ function parse(_ref, options, codecs, parseAny) {
 
 /***/ }),
 
+/***/ "./lib/codecs/UrlEncoded.js":
+/*!**********************************!*\
+  !*** ./lib/codecs/UrlEncoded.js ***!
+  \**********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   parse: () => (/* binding */ parse),
+/* harmony export */   priority: () => (/* binding */ priority),
+/* harmony export */   stringify: () => (/* binding */ stringify),
+/* harmony export */   weight: () => (/* binding */ weight)
+/* harmony export */ });
+/* harmony import */ var is__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! is */ "?316c");
+/* harmony import */ var is__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(is__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var qs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! qs */ "?6242");
+/* harmony import */ var qs__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(qs__WEBPACK_IMPORTED_MODULE_1__);
+
+
+var notTypeTest = /[^\=\&\\\/\[\]]/ig,
+  typeTest = /\%[\w\d][\w\d]/ig;
+var priority = -20;
+var weight = 0;
+function stringify(data, options, stringifyAny) {
+  var obj;
+  if (data.type === "UrlEncoded") {
+    if (data.newValue) obj = qs__WEBPACK_IMPORTED_MODULE_1___default().stringify({
+      value: data.newValue
+    }).split("value=")[1];else obj = qs__WEBPACK_IMPORTED_MODULE_1___default().stringify({
+      value: stringifyAny(data.childs[0], options)
+    }).split("value=")[1];
+  }
+  return obj;
+}
+function parse(_ref, options, codecs, parseAny) {
+  var data = _ref.data,
+    notBase64 = _ref.notBase64;
+  if (!is__WEBPACK_IMPORTED_MODULE_0___default().string(data)) return;
+  var output = {
+    type: "UrlEncoded",
+    childs: [],
+    data: data,
+    length: data.length
+  };
+  if (notTypeTest.test(data) || !typeTest.test(data)) return;
+  try {
+    var parsed = decodeURIComponent(data);
+    output.childs.push({
+      data: parsed
+    });
+  } catch (e) {
+    return false;
+  }
+  return output;
+}
+
+/***/ }),
+
 /***/ "./lib/codecs/UrlPath.js":
 /*!*******************************!*\
   !*** ./lib/codecs/UrlPath.js ***!
@@ -789,7 +852,7 @@ function stringify(data, options, stringifyAny) {
       value: data.newValue
     }).split("value=")[1];else obj = "#" + stringifyAny(nodes[0], options);
   } else if (data.type === "Path") {
-    if (data.newValue) obj = data.newValue;else obj = "/" + nodes.map(function (node) {
+    if (data.newValue) obj = data.newValue;else obj = data.prefix + nodes.map(function (node) {
       return stringify(node, options, stringifyAny);
     }).join("/");
   } else if (data.type === "PathItem") {
@@ -822,17 +885,21 @@ function parse(_ref, options, codecs, parseAny) {
   pathParams = pathParams.join("?");
   output.withQueryParam = !!pathParams;
   seemsToHaveAFileName = /[^\/\.]+\.[^\/\.]{2,5}$/i.test(data);
-  seemsToHaveIllegalCharacters = /[\s\{"]/i.test(data);
+  seemsToHaveIllegalCharacters = /[\s\{\=\*]/i.test(data);
   seemsToHaveMultipleDirectory = data.split('/').length > 2;
-  //console.log('parse::parse:75: ', data, seemsToHaveAFileName, seemsToHaveMultipleDirectory, seemsToHaveIllegalCharacters);
+  //console.log('parse::parse:75: ', data, seemsToHaveAFileName, seemsToHaveMultipleDirectory,
+  // seemsToHaveIllegalCharacters);
   if (!(data[0] === "/" || data.startsWith("./")) && !(seemsToHaveAFileName || seemsToHaveMultipleDirectory) || seemsToHaveIllegalCharacters) return;
   if (seemsToHaveIllegalCharacters && !(seemsToHaveAFileName && seemsToHaveMultipleDirectory)) return;
+  if (seemsToHaveAFileName && data.split('/').length < 2) return;
   try {
     var parsed = data.split("/");
-    parsed.shift();
+    //
+    if (data[0] === "/") parsed.shift();
     if (parsed.length) output.childs.push({
       type: "Path",
       data: data,
+      prefix: data[0] === "/" ? "/" : "",
       childs: parsed.map(function (item) {
         return {
           type: "PathItem",

@@ -1,5 +1,12 @@
-GET /Access.do?mode=recovery HTTP/1.1
-Host:cars.truk.com
+GET /psd-libs/psd-global/clientlibs/sony-ps-app.min.js?v=91e5a8fe-6634-41ba-bc6c-61052ecbc18e HTTP/1.1
+Host: direct.truk.com
+sec-ch-ua:"Not_A Brand";v="8", "Chromium";v="120", "Google Chrome";v="120"
+accept-encoding:gzip, deflate, br
+accept-language:fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7
 upgrade-insecure-requests:1
-user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36
+user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36
+accept:text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+cache-control:no-cache
+referer:https://direct.truk.com/fr-fr
+sec-ch-ua-platform:"Windows"
 

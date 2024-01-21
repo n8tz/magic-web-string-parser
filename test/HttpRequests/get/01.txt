@@ -1,2 +1,2 @@
-GET /en-us/authorize-auto?error=login_required&error_description=&error_uri=&state=%7B%22destination_url%22%3A%22%5C%2Fen-gb%3Futm_campaign%3Dfooter_list%26utm_medium%3Dfrontend_footer%26utm_source%3Dtruk.com%22%7D http/2
+GET /en-us/authorize-auto?error=login_required&error_description=&error_uri=&state=%257B%22destination_url%22%3A%22%5C%2Fen-gb%3Futm_campaign%3Dfooter_list%26utm_medium%3Dfrontend_footer%26utm_source%3Dtruk.com%22%7D http/2
 
