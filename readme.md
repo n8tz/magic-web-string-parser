@@ -1,10 +1,29 @@
-# magic-web-string-parser
+<h1 align="center">magic-web-string-parser</h1>
+
+___
+
+<p align="center">
+<a href="https://www.npmjs.com/package/magic-web-string-parser">
+<img src="https://img.shields.io/npm/v/magic-web-string-parser.svg" alt="Npm version" /></a>
+<img src="https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat" /></p>
+
+___
+
 
 A lib to recursively map any property encoded in a String, change theirs values, and re-encode keeping the original encoding structure.
 
 While this is working, that's an hacky not tested hack/pentest tool lib with probable various false positive matchs
 
 For now can deal with : Paths, Base64, Json, Query String, MultiLines blob, Http Request, Url & coma Key value list
+
+
+## You... like it / it saved your day / you stole all the code / you want more?
+
+[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](#)
+
+BTC     : bc1qh43j8jh6dr8v3f675jwqq3nqymtsj8pyq0kh5a<br/>
+Paypal  : <span class="badge-paypal"><a href="https://www.paypal.com/donate/?hosted_button_id=ECHYGKY3GR7CN" title="Donate to this project using Paypal"><img src="https://img.shields.io/badge/paypal-donate-yellow.svg" alt="PayPal donate button" /></a></span>
+
 
 ### JS Api :
 ```
